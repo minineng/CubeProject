@@ -2,38 +2,67 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraController : MonoBehaviour {
+public class CameraController : MonoBehaviour
+{
 
-	private Vector2 MapSize;
-	public int maxDistance;
-	private Vector3 initialPosition;
-	private Vector2 radius;
+    public Vector3 lookAt;
 
-	// Use this for initialization
-	void Start () {
-		
-		MapSize = new Vector2 (5,5);
-		radius = new Vector2 (0, 0);
+    private Vector3 initialPosition;
 
-		maxDistance = 5;
-		initialPosition = transform.position;
+    public float cameraRadius;
+    public float actualRadius;
+    public float cameraSpeed;
+    public float cameraHeight;
+    public float maxHeight;
+    public float minHeight;
 
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    public bool movement;
 
-		radius.x += 0.01f;
-		radius.y += 0.01f;
-		if (radius.x < -1 || radius.x > 1)
-			xSign = xSign * -1;
-			
-		if (radius.y < -1 || radius.y > 1)
-			ySign = ySign * -1;
+    public float x;
+    public float z;
+
+    // Use this for initialization
+    void Start()
+    {
+        x = 0;
+        z = 0;
+        minHeight = 0;
+        maxHeight = 20;
+        movement = true;
+        initialPosition = transform.position;
+
+        cameraHeight = transform.position.y;
+
+        lookAt = GetComponentInParent<LevelController>().getCameraLookingPoint(); ;
+        actualRadius = 0;
 
 
+    }
 
-		transform.position = new Vector3 (initialPosition.x+maxDistance*radius.x, initialPosition.y, initialPosition.z+maxDistance*radius.y);
+    void Update()
+    {
 
-	}
+        if (movement)
+        {
+
+            if (cameraHeight < minHeight)
+                cameraHeight = minHeight;
+            else if (cameraHeight > maxHeight)
+                cameraHeight = maxHeight;
+
+
+            actualRadius = actualRadius + cameraSpeed;
+
+            x = cameraRadius * Mathf.Cos(actualRadius * Mathf.Deg2Rad);
+            z = cameraRadius * Mathf.Sin(actualRadius * Mathf.Deg2Rad);
+
+            if (actualRadius > 360)
+                actualRadius = 0;
+
+            transform.position = new Vector3(x, cameraHeight, z);
+        }
+
+        transform.LookAt(lookAt);
+
+    }
 }

@@ -179,7 +179,12 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4889808332575206, guid: 2395ca484268e6b45ba89656f0953554, type: 2}
       propertyPath: m_LocalPosition.z
-      value: -9.5
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 20345023445702610, guid: 2395ca484268e6b45ba89656f0953554,
+        type: 2}
+      propertyPath: orthographic
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2395ca484268e6b45ba89656f0953554, type: 2}
@@ -347,4 +352,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e760a8082fa8bfc44974e25e420c3fbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDistance: 0
+  lookAt: {x: 0, y: 0, z: 0}
+  cameraRadius: 10
+  actualRadius: 0
+  cameraSpeed: 0.15
+  cameraHeight: 10
+  maxHeight: 0
+  minHeight: 0
+  movement: 0
+  x: 0
+  z: 0

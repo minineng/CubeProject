@@ -281,7 +281,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flor: {fileID: 1706862230453490, guid: e0295c8dee41b8c4585a05621cd72cc3, type: 2}
   character: {fileID: 1811948532309320, guid: 36c8626fb55c74e42868c56b3528a30e, type: 2}
-  turnCount: 0
+  turnCount: 2
   planning: 0
 --- !u!114 &114389383677613748
 MonoBehaviour:
@@ -349,6 +349,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8782eb9f637d01a47bec7912b1cddb6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  planning: 0
 --- !u!124 &124789338760920994
 Behaviour:
   m_ObjectHideFlags: 1
