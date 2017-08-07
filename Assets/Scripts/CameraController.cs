@@ -16,6 +16,8 @@ public class CameraController : MonoBehaviour
     public float cameraHeight;
     public float maxHeight;
     public float minHeight;
+    public float inactiveTime; //Time that will take to the camera to start moving on it's own
+    public float timeToGetMoving;
 
     public bool movement;
 
@@ -31,14 +33,13 @@ public class CameraController : MonoBehaviour
         maxHeight = 20;
 
         lastSavedPosition = new Vector3(-1, -1, -1);
-
         initialPosition = new Vector3(-1, -1, -1);
 
         cameraHeight = transform.position.y;
 
-        lookAt = GetComponentInParent<LevelController>().getCameraLookingPoint(); ;
+        lookAt = GetComponentInParent<LevelController>().getCameraLookingPoint();
 
-
+        timeToGetMoving = inactiveTime + Time.time;
     }
 
     void Update()
@@ -49,11 +50,22 @@ public class CameraController : MonoBehaviour
         else if (cameraHeight > maxHeight)
             cameraHeight = maxHeight;
 
+
+
+        if (timeToGetMoving < Time.time)
+            movement = true;
+
+        if (Input.GetAxis("CameraMovement") > 0)
+        {
+            movement = false;
+            timeToGetMoving = Time.time + inactiveTime;
+
+        }
+
         if (movement)
             actualRadius = actualRadius + cameraSpeed;
         else
         {
-            float mouseInc = 0.5f;
 
             if (Input.GetAxis("CameraMovement") > 0 && initialPosition == new Vector3(-1, -1, -1))
             { //Saves the inital position
@@ -65,11 +77,7 @@ public class CameraController : MonoBehaviour
             {
 
                 float diff = (initialPosition.x - Input.mousePosition.x) / 100;
-
                 lastSavedPosition = Input.mousePosition;
-
-                print("Me muevo " + diff);
-
                 actualRadius = actualRadius + diff;
 
             }

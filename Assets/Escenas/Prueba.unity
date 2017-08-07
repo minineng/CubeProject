@@ -443,6 +443,8 @@ MonoBehaviour:
   cameraHeight: 0
   maxHeight: 0
   minHeight: 0
+  inactiveTime: 10
+  timeToGetMoving: 0
   movement: 0
   x: 0
   z: 0
