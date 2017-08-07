@@ -8,9 +8,21 @@ public class LevelController : MonoBehaviour
     public GameObject flor;
     public GameObject character;
     public Vector3 cameraLookingPoint;
-    public char[,] mapMatrix;
+    
     public int turnCount;
     public bool planning;
+    public GameObject player;
+
+    levelStructure testMap;
+
+    public struct levelStructure
+    {
+        public char[,] mapMatrix;
+        public List<GameObject> tileList;
+        public int[,] heightMatrix;
+        public int setID;
+        public int id;
+    };
 
     // Use this for initialization
     void Start()
@@ -20,7 +32,8 @@ public class LevelController : MonoBehaviour
         turnCount = 0;
         planning = true;
 
-        mapMatrix = new char[matSize, matSize];
+        testMap.mapMatrix = new char[matSize, matSize];
+        testMap.heightMatrix = new int[matSize, matSize];
 
         //print("Matriz de " + mapMatrix.GetLength(0) + "x" + mapMatrix.GetLength(1));
 
@@ -43,22 +56,30 @@ public class LevelController : MonoBehaviour
 
         Vector3 position = new Vector3(0, 0, 0);
 
-        for (int i = 0; i < mapMatrix.GetLength(0); i++)
+        for (int i = 0; i < testMap.mapMatrix.GetLength(0); i++)
         {
-            for (int j = 0; j < mapMatrix.GetLength(1); j++)
+            for (int j = 0; j < testMap.mapMatrix.GetLength(1); j++)
             {
 
-                if (mapMatrix[i, j] != '-')
+                if (testMap.mapMatrix[i, j] != '-')
                 {
-                    position.Set(-3 + j, -0.33f, -2 + i);
+                    position.Set(-3 + j, 0.33f * testMap.heightMatrix[i,j], -2 + i);
                     GameObject tile = Instantiate(flor, position, Quaternion.identity, this.transform);
+                    tile.GetComponent<tileController>().coordinates = new Vector3(j, testMap.heightMatrix[i, j], i);
+                    testMap.tileList.Add(tile);
+
+                    if (testMap.mapMatrix[i, j] == 'F')
+                        tile.GetComponent<tileController>().paintThisTile(true);
+
                     tile.name = "Tile " + i + ", " + j;
                 }
 
-                if (mapMatrix[i, j] == 'F')
+                if (testMap.mapMatrix[i, j] == 'F')
                 {
                     position.Set(-3 + j, 1, -2 + i);
-                    GameObject player = Instantiate(character, position, Quaternion.identity, this.transform);
+                    player = Instantiate(character, position, Quaternion.identity, this.transform);
+                    player.GetComponent<PlayerController>().coordinates = new Vector3(j, 0, i);
+
                     player.name = "Player";
                 }
             }
@@ -71,22 +92,22 @@ public class LevelController : MonoBehaviour
     private void mapMatrixTest()
     {
 
-        for (int i = 0; i < mapMatrix.GetLength(0); i++)
+        for (int i = 0; i < testMap.mapMatrix.GetLength(0); i++)
         {
-            for (int j = 0; j < mapMatrix.GetLength(1); j++)
+            for (int j = 0; j < testMap.mapMatrix.GetLength(1); j++)
             {
 
                 if (i == 0 && (j == 0 || j == 1 || j == 2))
-                    mapMatrix[i, j] = 'f';
+                    testMap.mapMatrix[i, j] = 'f';
 
                 else if (j == 2 && (i == 1 || i == 2 || i == 3))
-                    mapMatrix[i, j] = 'f';
+                    testMap.mapMatrix[i, j] = 'f';
 
                 else if (i == 4 && (j == 0 || j == 1 || i == 2 || i == 3 || i == 4))
-                    mapMatrix[i, j] = 'f';
+                    testMap.mapMatrix[i, j] = 'f';
 
                 if (i == 0 && j == 1)
-                    mapMatrix[i, j] = 'F';
+                    testMap.mapMatrix[i, j] = 'F';
 
             }
         }
@@ -99,12 +120,13 @@ public class LevelController : MonoBehaviour
 
     private void mapMatrixInit()
     {
-
-        for (int i = 0; i < mapMatrix.GetLength(0); i++)
+        testMap.tileList = new List<GameObject>();
+        for (int i = 0; i < testMap.mapMatrix.GetLength(0); i++)
         {
-            for (int j = 0; j < mapMatrix.GetLength(1); j++)
+            for (int j = 0; j < testMap.mapMatrix.GetLength(1); j++)
             {
-                mapMatrix[i, j] = '-';
+                testMap.mapMatrix[i, j] = '-';
+                testMap.heightMatrix[i, j] = 0;
             }
         }
     }
@@ -112,13 +134,13 @@ public class LevelController : MonoBehaviour
     private void mapMatrixPrint()
     {
         string line;
-        for (int i = 0; i < mapMatrix.GetLength(0); i++)
+        for (int i = 0; i < testMap.mapMatrix.GetLength(0); i++)
         {
             line = "(";
-            for (int j = 0; j < mapMatrix.GetLength(1); j++)
+            for (int j = 0; j < testMap.mapMatrix.GetLength(1); j++)
             {
-                line += " " + mapMatrix[i, j];
-                if (j < mapMatrix.GetLength(1) - 1)
+                line += " " + testMap.mapMatrix[i, j];
+                if (j < testMap.mapMatrix.GetLength(1) - 1)
                     line += ",";
             }
             print(line + " )");
@@ -128,6 +150,20 @@ public class LevelController : MonoBehaviour
     public Vector3 getCameraLookingPoint()
     {
         return cameraLookingPoint;
+    }
+
+    public GameObject getTileByCoordinates(Vector3 coordinates)
+    {
+        GameObject aux = null;
+
+        for(int i = 0; i < testMap.tileList.Count; i++)
+        {
+
+            if (coordinates == testMap.tileList[i].GetComponent<tileController>().coordinates)
+                aux = testMap.tileList[i];
+        }
+
+        return aux;
     }
 
     // Update is called once per frame
