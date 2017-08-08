@@ -73,12 +73,7 @@ public class PlayerController : MonoBehaviour
                 addToActionSet(actionList.backward);
 
             if (Input.GetButtonDown("ExecuteActions"))
-            {
-                GetComponentInParent<LevelController>().planning = false;
-                timeToNewAction = Time.time + timeBetweenActions;
-                print("Ejecuto las acciones");
-                actionTurn = 0;
-            }
+                executeActions();
         }
         else
         {
@@ -89,13 +84,22 @@ public class PlayerController : MonoBehaviour
                     makeAction(actionSet[actionTurn]);
                     actionTurn++;
                     timeToNewAction = Time.time + timeBetweenActions;
-                    GetComponentInParent<LevelController>().getTileByCoordinates(coordinates).GetComponent<tileController>().paintThisTile(true);
+                    if (GetComponentInParent<LevelController>().getTileByCoordinates(coordinates) != null)
+                        GetComponentInParent<LevelController>().getTileByCoordinates(coordinates).GetComponent<tileController>().paintThisTile(true);
                 }
             }
         }
 
 
 
+    }
+
+    public void executeActions()
+    {
+        GetComponentInParent<LevelController>().planning = false;
+        timeToNewAction = Time.time + timeBetweenActions;
+        print("Ejecuto las acciones");
+        actionTurn = 0;
     }
 
     public int actionSetGapCount()
@@ -112,6 +116,10 @@ public class PlayerController : MonoBehaviour
 
     public void addToActionSet(actionList action)
     {
+        print("Añado " + action);
+
+
+
         if (actionSetGapCount() > 0)
             actionSet[actionSet.Length - actionSetGapCount()] = action;
         else

@@ -19,7 +19,7 @@ public class CanvasController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        planning = GetComponentInParent<LevelController>().getPlanning();
+        planning = GetComponentInParent<LevelController>().planning;
 
         if (!planning)
         {
