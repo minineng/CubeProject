@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
         turnRight,
         turnLeft,
         jump,
+        wait,
+        execute,
 
     };
 
@@ -23,17 +25,18 @@ public class PlayerController : MonoBehaviour
 
     int actionTurn;
     public int maxTurns;
-    bool playingTime;
     public float timeBetweenActions;
     private float timeToNewAction;
     public Vector3 coordinates;
+
+    public bool alive;
 
 
     // Use this for initialization
     void Start()
     {
         lookingTo = 3;
-
+        alive = true;
         maxTurns = 20;
 
         actionSet = new actionList[maxTurns];
@@ -90,7 +93,8 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-
+        if (transform.position.y < -2)
+            alive = false;
 
     }
 
@@ -116,10 +120,7 @@ public class PlayerController : MonoBehaviour
 
     public void addToActionSet(actionList action)
     {
-        print("Añado " + action);
-
-
-
+       // print("Añado " + action);
         if (actionSetGapCount() > 0)
             actionSet[actionSet.Length - actionSetGapCount()] = action;
         else
@@ -198,6 +199,12 @@ public class PlayerController : MonoBehaviour
                 break;
             case actionList.jump:
 
+                break;
+            case actionList.execute:
+                executeActions();
+                break;
+            case actionList.wait:
+                transform.GetComponentInParent<LevelController>().turnCount++;
                 break;
 
         }

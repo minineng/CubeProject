@@ -23,8 +23,20 @@ public class CanvasController : MonoBehaviour
 
         if (!planning)
         {
-            transform.GetChild(0).GetComponent<Text>().text = "playing time";
-            transform.GetChild(0).GetComponent<Text>().color = Color.red;
+            if (GetComponentInParent<LevelController>().player.GetComponent<PlayerController>().alive)
+            {
+                transform.GetChild(0).GetComponent<Text>().text = "playing time"; 
+                transform.GetChild(0).GetComponent<Text>().color = Color.red;
+            }
+            else
+            {
+                transform.GetChild(0).GetComponent<Text>().text = "you are dead :)";
+                transform.GetChild(0).GetComponent<Text>().color = Color.red;
+            }
+
+
         }
+
+
     }
 }

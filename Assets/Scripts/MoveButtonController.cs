@@ -4,13 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class MoveButtonController : MonoBehaviour {
-
-    public Sprite image;
+    public Sprite MainSprite;
+    public Sprite AlternateSprite;
     public PlayerController.actionList action;
 
 	// Use this for initialization
 	void Start () {
-        image = new Sprite();
 
         switch (action)
         {
@@ -32,11 +31,20 @@ public class MoveButtonController : MonoBehaviour {
             case PlayerController.actionList.jump:
                 name = "JumpArrow";
                 break;
+            case PlayerController.actionList.wait:
+                name = "WaitButton";
+                break;
+            case PlayerController.actionList.execute:
+                name = "PlayButton";
+                AlternateSprite = Resources.Load("Images/StopButton", typeof(Sprite)) as Sprite;
+                break;
         }
         string ruta = "Images/" + transform.name;
+        MainSprite = Resources.Load(ruta, typeof(Sprite)) as Sprite;
 
-        //print("Cargo "+ ruta);
-        GetComponent<Image>().sprite = Resources.Load(ruta, typeof(Sprite)) as Sprite;
+
+        print("Cargo "+ ruta);
+        GetComponent<Image>().sprite = MainSprite;
 
     }
 	
@@ -47,7 +55,16 @@ public class MoveButtonController : MonoBehaviour {
 
     public void OnClick()
     {
-        transform.parent.GetComponentInParent<LevelController>().player.GetComponent<PlayerController>().addToActionSet(action);
+        if (action != PlayerController.actionList.execute)
+            transform.parent.GetComponentInParent<LevelController>().player.GetComponent<PlayerController>().addToActionSet(action);
+        else
+        {
+            transform.parent.GetComponentInParent<LevelController>().player.GetComponent<PlayerController>().executeActions();
+            if(GetComponent<Image>().sprite == MainSprite)
+                GetComponent<Image>().sprite = AlternateSprite;
+            else
+                GetComponent<Image>().sprite = MainSprite;
+        }
 
 
     }

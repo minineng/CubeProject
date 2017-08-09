@@ -5,12 +5,15 @@ using UnityEngine;
 public class LevelController : MonoBehaviour
 {
 
-    public GameObject flor;
+    public GameObject floor;
     public GameObject character;
     public Vector3 cameraLookingPoint;
-    
+
     public int turnCount;
+
     public bool planning;
+    public bool running;
+
     public GameObject player;
 
     levelStructure testMap;
@@ -22,15 +25,19 @@ public class LevelController : MonoBehaviour
         public int[,] heightMatrix;
         public int setID;
         public int id;
+       
     };
 
     // Use this for initialization
     void Start()
     {
 
+        floor = Resources.Load("Prefabs/Tile", typeof(GameObject)) as GameObject;
+
         int matSize = 5;
         turnCount = 0;
         planning = true;
+        running = false;
 
         testMap.mapMatrix = new char[matSize, matSize];
         testMap.heightMatrix = new int[matSize, matSize];
@@ -45,10 +52,20 @@ public class LevelController : MonoBehaviour
         cameraLookingPoint = new Vector3(-3 + Mathf.Floor(matSize / 2), -0.33f, -2 + Mathf.Floor(matSize / 2));
 
 
-
-
-
         //mapMatrixPrint();
+    }
+
+    void Update()
+    {
+
+        if (running)
+        {
+
+
+
+        }
+
+
     }
 
     private void mapMatrixGenerator()
@@ -63,8 +80,8 @@ public class LevelController : MonoBehaviour
 
                 if (testMap.mapMatrix[i, j] != '-')
                 {
-                    position.Set(-3 + j, 0.33f * testMap.heightMatrix[i,j], -2 + i);
-                    GameObject tile = Instantiate(flor, position, Quaternion.identity, this.transform);
+                    position.Set(-3 + j, 0.33f * testMap.heightMatrix[i, j], -2 + i);
+                    GameObject tile = Instantiate(floor, position, Quaternion.identity, this.transform);
                     tile.GetComponent<tileController>().coordinates = new Vector3(j, testMap.heightMatrix[i, j], i);
                     testMap.tileList.Add(tile);
 
@@ -86,8 +103,6 @@ public class LevelController : MonoBehaviour
         }
 
     }
-
-
 
     private void mapMatrixTest()
     {
@@ -111,11 +126,6 @@ public class LevelController : MonoBehaviour
 
             }
         }
-    }
-
-    public bool getPlanning()
-    {
-        return planning;
     }
 
     private void mapMatrixInit()
@@ -156,7 +166,7 @@ public class LevelController : MonoBehaviour
     {
         GameObject aux = null;
 
-        for(int i = 0; i < testMap.tileList.Count; i++)
+        for (int i = 0; i < testMap.tileList.Count; i++)
         {
 
             if (coordinates == testMap.tileList[i].GetComponent<tileController>().coordinates)
@@ -164,15 +174,6 @@ public class LevelController : MonoBehaviour
         }
 
         return aux;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-
-
-
     }
 
 }
