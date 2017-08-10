@@ -166,6 +166,29 @@ public class PlayerController : mainElement
                     lookingTo = 0;
                 break;
             case actionList.jump:
+                float jumptHeight = 0.5f;
+                switch (lookingTo)
+                {
+                    case 0:
+                        this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y+ jumptHeight, this.transform.position.z + 1);
+                        coordinates.z++;
+                        break;
+                    case 1:
+                        this.transform.position = new Vector3(this.transform.position.x - 1, this.transform.position.y + jumptHeight, this.transform.position.z);
+                        coordinates.x--;
+                        break;
+                    case 2:
+                        this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + jumptHeight, this.transform.position.z - 1);
+                        coordinates.z--;
+                        break;
+                    case 3:
+                        this.transform.position = new Vector3(this.transform.position.x + 1, this.transform.position.y + jumptHeight, this.transform.position.z);
+                        coordinates.x++;
+                        break;
+                }
+
+                GetComponentInParent<LevelController>().getTileByCoordinates(new Vector2(coordinates.x, coordinates.z)).GetComponent<tileController>().paintThisTile(true);
+                coordinates = GetComponentInParent<LevelController>().getTileByCoordinates(new Vector2(coordinates.x, coordinates.z)).GetComponent<tileController>().coordinates;
 
                 break;
             case actionList.execute:

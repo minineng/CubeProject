@@ -8,11 +8,10 @@ public class EnemyController : mainElement {
     {
         turret,
         patroller
-
-
     };
 
     public enemyType type;
+    public GameObject bullet;
 
     // Use this for initialization
     void Start () {
@@ -127,21 +126,21 @@ public class EnemyController : mainElement {
     public void checkPlayer()
     {
         Vector3 playerPos = GetComponentInParent<LevelController>().player.GetComponent<PlayerController>().coordinates;
-
+        bool detected = false;
         switch (lookingTo)
-        {//GetComponentInParent<LevelController>().matSize
+        {
             case 0:
                 for (int i = (int)coordinates.z; i <= playerPos.z; i++)
                 {
                     if (playerPos == new Vector3(coordinates.x, coordinates.y, i))
-                        print("Disparo hacia arriba");
+                        detected = true;
                 }
                 break;
             case 1:
                 for(int i=0; i < coordinates.x; i++)
                 {
                     if (playerPos == new Vector3(i, coordinates.y, coordinates.z))
-                        print("Disparo hacia la izquierda");
+                        detected = true;
                 }
                 break;
 
@@ -149,17 +148,26 @@ public class EnemyController : mainElement {
                 for (int i = 0; i < coordinates.z; i++)
                 {
                     if (playerPos == new Vector3(coordinates.x, coordinates.y, i))
-                        print("Disparo hacia abajo");
+                        detected = true;
                 }
                 break;
             case 3:
                 for (int i = (int)coordinates.x; i <= playerPos.x; i++)
                 {
                     if (playerPos == new Vector3(i, coordinates.y, coordinates.z))
-                        print("Disparo hacia la derecha");
+                        detected = true;
                 }
                 break;
         }
+
+        if (detected)
+        {
+            GetComponentInParent<LevelController>().running = false;
+            GameObject auxBullet = Instantiate(bullet, new Vector3 (transform.position.x-0.01f, transform.position.y, transform.position.z), Quaternion.identity, transform);
+            auxBullet.GetComponent<BulletController>().direction = lookingTo;
+
+        }
+
 
     }
 

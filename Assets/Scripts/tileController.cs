@@ -8,6 +8,7 @@ public class tileController : MonoBehaviour {
     public Vector3 coordinates;
 
     public Material paintedMaterial;
+    public Material finishLineMaterial;
 
 	// Use this for initialization
 	void Start () {

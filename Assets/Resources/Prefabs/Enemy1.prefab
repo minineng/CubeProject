@@ -196,6 +196,7 @@ MonoBehaviour:
   coordinates: {x: 0, y: 0, z: 0}
   actionSet: 
   type: 0
+  bullet: {fileID: 1991368205727272, guid: c65d68fd0c202cb42904ef01b8729194, type: 2}
 --- !u!135 &135165560624663858
 SphereCollider:
   m_ObjectHideFlags: 1
