@@ -5,8 +5,6 @@ using UnityEngine;
 public class PlayerController : mainElement
 {
 
-    private int maxTurns;
-
     public bool alive;
 
 
@@ -15,9 +13,7 @@ public class PlayerController : mainElement
     {
         lookingTo = 3;
         alive = true;
-        //maxTurns = 20;
-
-       // actionSet = new actionList[maxTurns];
+        actionSet = new actionList[GetComponentInParent<LevelController>().maxTurns];
 
     }
 
@@ -89,7 +85,7 @@ public class PlayerController : mainElement
         }
     }*/
 
-
+        /*
     public void addToActionSet(actionList action)
     {
        // print("Añado " + action);
@@ -107,7 +103,7 @@ public class PlayerController : mainElement
 
         }
 
-    }
+    }*/
     
     public override void makeAction(actionList action)
     {

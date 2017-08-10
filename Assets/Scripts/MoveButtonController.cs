@@ -43,7 +43,7 @@ public class MoveButtonController : MonoBehaviour {
         MainSprite = Resources.Load(ruta, typeof(Sprite)) as Sprite;
 
 
-        print("Cargo "+ ruta);
+        //print("Cargo "+ ruta);
         GetComponent<Image>().sprite = MainSprite;
 
     }

@@ -44,6 +44,25 @@ abstract public class mainElement : MonoBehaviour
         return auxCont;
     }
 
+    public void addToActionSet(actionList action)
+    {
+        // print("Añado " + action);
+        if (actionSetGapCount() > 0)
+            actionSet[actionSetCount()] = action;
+        else
+        {
+            print("Lista de acciones llena del "+transform.name);
+
+            for (int i = 0; i < actionSet.Length; i++)
+            {
+                print("Accion " + i + " " + actionSet[i]);
+
+            }
+
+        }
+
+    }
+
     public abstract void makeAction(actionList action);
 
 }

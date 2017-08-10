@@ -4,15 +4,54 @@ using UnityEngine;
 
 public class EnemyController : mainElement {
 
-	// Use this for initialization
-	void Start () {
+    public enum enemyType
+    {
+        turret,
+        patroller
+
+
+    };
+
+    public enemyType type;
+
+    // Use this for initialization
+    void Start () {
+        actionSet = new actionList[GetComponentInParent<LevelController>().maxTurns];
+
+        switch (type)
+        {
+            case enemyType.turret:
+                for (int i = 0; i < GetComponentInParent<LevelController>().maxTurns; i++)
+                    addToActionSet(actionList.turnRight);
+                break;
+            case enemyType.patroller:
+
+                break;
+        }
+
+
+
 		
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
-	}
+        switch (lookingTo)
+        {
+            case 0:
+                transform.localEulerAngles = new Vector3(0, 0, 0);
+                break;
+            case 1:
+                transform.localEulerAngles = new Vector3(0, 270, 0);
+                break;
+            case 2:
+                transform.localEulerAngles = new Vector3(0, 180, 0);
+                break;
+            case 3:
+                transform.localEulerAngles = new Vector3(0, 90, 0);
+                break;
+        }
+    }
 
     public void init()
     {
@@ -72,7 +111,6 @@ public class EnemyController : mainElement {
                 lookingTo--;
                 if (lookingTo < 0)
                     lookingTo = 3;
-
                 break;
             case actionList.turnLeft:
                 lookingTo++;
@@ -82,6 +120,53 @@ public class EnemyController : mainElement {
 
         }
 
+        if (type == enemyType.turret)
+            checkPlayer();
+    }
+
+    public void checkPlayer()
+    {
+        Vector3 playerPos = GetComponentInParent<LevelController>().player.GetComponent<PlayerController>().coordinates;
+
+        switch (lookingTo)
+        {//GetComponentInParent<LevelController>().matSize
+            case 0:
+                for (int i = (int)coordinates.z; i <= playerPos.z; i++)
+                {
+                    if (playerPos == new Vector3(coordinates.x, coordinates.y, i))
+                        print("Disparo hacia arriba");
+                }
+                break;
+            case 1:
+                for(int i=0; i < coordinates.x; i++)
+                {
+                    if (playerPos == new Vector3(i, coordinates.y, coordinates.z))
+                        print("Disparo hacia la izquierda");
+                }
+                break;
+
+            case 2:
+                for (int i = 0; i < coordinates.z; i++)
+                {
+                    if (playerPos == new Vector3(coordinates.x, coordinates.y, i))
+                        print("Disparo hacia abajo");
+                }
+                break;
+            case 3:
+                for (int i = (int)coordinates.x; i <= playerPos.x; i++)
+                {
+                    if (playerPos == new Vector3(i, coordinates.y, coordinates.z))
+                        print("Disparo hacia la derecha");
+                }
+                break;
+        }
 
     }
+
+
+
+
+
+
+
 }

@@ -10,6 +10,8 @@ public class LevelController : MonoBehaviour
     public GameObject enemy;
     public Vector3 cameraLookingPoint;
 
+    public int matSize;
+
     public int turnCount;
 
     public bool planning;
@@ -41,7 +43,7 @@ public class LevelController : MonoBehaviour
         elementsInPlay = new List<GameObject>();
         floor = Resources.Load("Prefabs/Tile", typeof(GameObject)) as GameObject;
 
-        int matSize = 5;
+        matSize = 5;
         turnCount = 0;
         planning = true;
         running = false;
@@ -75,7 +77,19 @@ public class LevelController : MonoBehaviour
             {
                 if (turnCount < player.GetComponent<PlayerController>().actionSetCount())
                 {
-                    player.GetComponent<PlayerController>().makeAction(player.GetComponent<PlayerController>().actionSet[turnCount]);
+                   for(int i = 0; i < elementsInPlay.Count; i++)
+                    {
+                        //print("Soy "+ elementsInPlay[i].transform.name);
+                        elementsInPlay[i].GetComponent<mainElement>().makeAction(elementsInPlay[i].GetComponent<mainElement>().actionSet[turnCount]);
+
+                    }
+
+
+
+
+
+
+                    //player.GetComponent<PlayerController>().makeAction(player.GetComponent<PlayerController>().actionSet[turnCount]);
                     turnCount++;
                     timeToNewAction = Time.time + timeBetweenActions;
                     if (getTileByCoordinates(player.GetComponent<PlayerController>().coordinates) != null)
@@ -130,6 +144,8 @@ public class LevelController : MonoBehaviour
                     position.Set(-3 + j, 0.33f * (testMap.heightMatrix[i, j] +2), -2 + i);
                     GameObject auxEnemy = Instantiate(enemy, position, Quaternion.identity, this.transform);
                     auxEnemy.GetComponent<EnemyController>().coordinates = new Vector3(j, 0, i);
+                    auxEnemy.GetComponent<EnemyController>().type = EnemyController.enemyType.turret;
+                    auxEnemy.GetComponent<EnemyController>().lookingTo = Random.Range(0,4);
                     elementsInPlay.Add(auxEnemy);
                     auxEnemy.name = "Turret";
                 }
@@ -146,7 +162,7 @@ public class LevelController : MonoBehaviour
             for (int j = 0; j < testMap.mapMatrix.GetLength(1); j++)
             {
 
-                if (i == 0 && (j == 0 || j == 1 || j == 2))
+                if (i == 0)
                     testMap.mapMatrix[i, j] = 'f';
 
                 else if (j == 2 && (i == 1 || i == 2 || i == 3))
@@ -158,7 +174,7 @@ public class LevelController : MonoBehaviour
                 if (i == 0 && j == 1)
                     testMap.mapMatrix[i, j] = 'F';
 
-                if (i == 2 && j == 4)
+                if (i == 2 && (j == 0 || j == 4))
                     testMap.mapMatrix[i, j] = 'T';
 
             }
