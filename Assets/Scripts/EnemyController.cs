@@ -15,8 +15,8 @@ public class EnemyController : mainElement {
 
     // Use this for initialization
     void Start () {
-        actionSet = new actionList[GetComponentInParent<LevelController>().maxTurns];
-
+        actionSet = new List<actionList>();
+/*
         switch (type)
         {
             case enemyType.turret:
@@ -26,7 +26,7 @@ public class EnemyController : mainElement {
             case enemyType.patroller:
 
                 break;
-        }
+        }*/
 
 
 
@@ -52,10 +52,22 @@ public class EnemyController : mainElement {
         }
     }
 
-    public void init()
+    public void addActions(int number)
     {
-        actionSet = new actionList[GetComponentInParent<LevelController>().maxTurns];
+        switch (type)
+        {
+            case enemyType.turret:
+                for (int i = 0; i < number; i++)
+                    actionSet.Add(actionList.turnRight);
+                break;
+            case enemyType.patroller:
+
+                break;
+        }
+
+
     }
+
 
     public override void makeAction(actionList action)
     {

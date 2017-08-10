@@ -58,7 +58,7 @@ public class MoveButtonController : MonoBehaviour {
     public void OnClick()
     {
         if (action != PlayerController.actionList.execute)
-            transform.parent.GetComponentInParent<LevelController>().player.GetComponent<PlayerController>().addToActionSet(action);
+            transform.parent.GetComponentInParent<LevelController>().player.GetComponent<PlayerController>().actionSet.Add(action);
         else
         {
             transform.parent.GetComponentInParent<LevelController>().player.GetComponent<PlayerController>().executeActions();

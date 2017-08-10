@@ -7,6 +7,7 @@ public class FeedElementController : MonoBehaviour {
 
     public PlayerController.actionList action;
     public Button button;
+    public int id;
 
     // Use this for initialization
     void Start () {
@@ -18,15 +19,12 @@ public class FeedElementController : MonoBehaviour {
                 break;
             case PlayerController.actionList.turnRight:
                 name = "RightArrow";
-
                 break;
             case PlayerController.actionList.forward:
                 name = "ForwardArrow";
-
                 break;
             case PlayerController.actionList.backward:
                 name = "BackwardArrow";
-
                 break;
             case PlayerController.actionList.jump:
                 name = "JumpArrow";
@@ -45,9 +43,9 @@ public class FeedElementController : MonoBehaviour {
 
     void TaskOnClick()
     {
-        
-
-
+        transform.parent.GetComponentInParent<LevelController>().player.GetComponent<PlayerController>().actionSet.RemoveAt(id);
+        GetComponentInParent<OrderFeedController>().feedList.RemoveAt(id);
+        GetComponentInParent<OrderFeedController>().updateFeedPositions();
         Destroy(this.gameObject);
     }
 

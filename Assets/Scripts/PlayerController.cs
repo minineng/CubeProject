@@ -13,7 +13,7 @@ public class PlayerController : mainElement
     {
         lookingTo = 3;
         alive = true;
-        actionSet = new actionList[GetComponentInParent<LevelController>().maxTurns];
+        actionSet = new List<actionList>();
 
     }
 
@@ -41,13 +41,13 @@ public class PlayerController : mainElement
         {
 
             if (Input.GetButtonDown("Forward"))
-                addToActionSet(actionList.forward);
+                actionSet.Add(actionList.forward);
             if (Input.GetButtonDown("Right"))
-                addToActionSet(actionList.turnRight);
+                actionSet.Add(actionList.turnRight);
             if (Input.GetButtonDown("Left"))
-                addToActionSet(actionList.turnLeft);
+                actionSet.Add(actionList.turnLeft);
             if (Input.GetButtonDown("Backward"))
-                addToActionSet(actionList.backward);
+                actionSet.Add(actionList.backward);
             if (Input.GetButtonDown("ExecuteActions"))
                 executeActions();
         }
@@ -187,7 +187,7 @@ public class PlayerController : mainElement
                         break;
                 }
 
-                GetComponentInParent<LevelController>().getTileByCoordinates(new Vector2(coordinates.x, coordinates.z)).GetComponent<tileController>().paintThisTile(true);
+                GetComponentInParent<LevelController>().getTileByCoordinates(new Vector2(coordinates.x, coordinates.z)).GetComponent<tileController>().paintThisTile();
                 coordinates = GetComponentInParent<LevelController>().getTileByCoordinates(new Vector2(coordinates.x, coordinates.z)).GetComponent<tileController>().coordinates;
 
                 break;

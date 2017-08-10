@@ -17,13 +17,17 @@ public class tileController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (painted && GetComponent<MeshRenderer>().material != paintedMaterial)
-            GetComponent<MeshRenderer>().material = paintedMaterial;
+       /* if (painted && GetComponent<MeshRenderer>().material != paintedMaterial)
+            GetComponent<MeshRenderer>().material = paintedMaterial;*/
     }
 
-    public void paintThisTile(bool paint)
+    public void paintThisTile()
     {
-        painted = paint;
+        if (!painted)
+        {
+            painted = true;
+            GetComponent<MeshRenderer>().material = paintedMaterial;
+        }
     }
 
     public bool isPainted()

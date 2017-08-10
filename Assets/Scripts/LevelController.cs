@@ -22,11 +22,7 @@ public class LevelController : MonoBehaviour
 
     public int matSize;
     levelStructure testMap;
-    public int maxTurns;
-
-
-
-
+    
     public struct levelStructure
     {
         public char[,] mapMatrix;
@@ -43,7 +39,6 @@ public class LevelController : MonoBehaviour
         
 
         matSize = 5;
-        maxTurns = 40;
         testMap.mapMatrix = new char[matSize, matSize];
         testMap.heightMatrix = new int[matSize, matSize];
 
@@ -54,6 +49,7 @@ public class LevelController : MonoBehaviour
         running = false;
         allPainted = false;
         timeBetweenActions = 1f;
+        timeToNewAction = 0;
 
         mapMatrixInit();
         mapMatrixTest();
@@ -66,6 +62,7 @@ public class LevelController : MonoBehaviour
         //mapMatrixPrint();
     }
 
+    /*
     void Update()
     {
         if (planning && !running)
@@ -75,23 +72,75 @@ public class LevelController : MonoBehaviour
         {
             if (Time.time > timeToNewAction)
             {
-                if (turnCount < player.GetComponent<PlayerController>().actionSetCount())
+                print("Turnos a hacer "+ player.GetComponent<PlayerController>().actionSet.Count);
+                if (turnCount < player.GetComponent<PlayerController>().actionSet.Count)
                 {
+                    print("asddfasdf");
                     for (int i = 0; i < elementsInPlay.Count; i++)
                     {
                         elementsInPlay[i].GetComponent<mainElement>().makeAction(elementsInPlay[i].GetComponent<mainElement>().actionSet[turnCount]);
+                        print("Soy "+elementsInPlay[i].name);
+                    }
+                    print("ASEREJE");
+                    turnCount++;
+                    timeToNewAction = Time.time + timeBetweenActions;
+                    if (getTileByCoordinates(player.GetComponent<PlayerController>().coordinates) != null)
+                    {
+                        getTileByCoordinates(player.GetComponent<PlayerController>().coordinates).GetComponent<tileController>().paintThisTile();
+                        //print("Quedan "+ (getPaintedTilesCount() - testMap.tileList.Count)+" tiles por pintar");
+                        if (getPaintedTilesCount() == (testMap.tileList.Count))
+                            allPainted = true;
+                    }
+                }
+            }
+            if (player.GetComponent<PlayerController>().coordinates == finishPosition)
+                print("Has llegado a la meta");
+            if (allPainted)
+                print("Has pintado todos los tiles");
+
+        }
+        else
+        {
+            timeToNewAction = Time.time + timeBetweenActions;
+
+        }
+
+
+    }*/
+
+    void Update()
+    {
+        if (planning && !running)
+            timeToNewAction = Time.time + timeBetweenActions;
+
+        if (running)
+        {
+            if (Time.time > timeToNewAction)
+            {
+                if (turnCount < player.GetComponent<PlayerController>().actionSet.Count)
+                {
+                    for (int i = 0; i < elementsInPlay.Count; i++)
+                    {
+                        if (elementsInPlay[i].GetComponent<mainElement>().actionSet.Count == 0)
+                            elementsInPlay[i].GetComponent<EnemyController>().addActions(player.GetComponent<PlayerController>().actionSet.Count);
+
+                        elementsInPlay[i].GetComponent<mainElement>().makeAction(elementsInPlay[i].GetComponent<mainElement>().actionSet[turnCount]);
+                        //print("Soy " + elementsInPlay[i].name);
                     }
 
                     turnCount++;
                     timeToNewAction = Time.time + timeBetweenActions;
                     if (getTileByCoordinates(player.GetComponent<PlayerController>().coordinates) != null)
                     {
-                        getTileByCoordinates(player.GetComponent<PlayerController>().coordinates).GetComponent<tileController>().paintThisTile(true);
+                        getTileByCoordinates(player.GetComponent<PlayerController>().coordinates).GetComponent<tileController>().paintThisTile();
                         //print("Quedan "+ (getPaintedTilesCount() - testMap.tileList.Count)+" tiles por pintar");
                         if (getPaintedTilesCount() == (testMap.tileList.Count))
                             allPainted = true;
                     }
                 }
+                /*turnCount++;
+                timeToNewAction = Time.time + timeBetweenActions;
+                print("lol");*/
             }
             if (player.GetComponent<PlayerController>().coordinates == finishPosition)
                 print("Has llegado a la meta");
@@ -127,7 +176,7 @@ public class LevelController : MonoBehaviour
                         testMap.tileList.Add(tile);
 
                     if (testMap.mapMatrix[i, j] == 'C')
-                        tile.GetComponent<tileController>().paintThisTile(true);
+                        tile.GetComponent<tileController>().paintThisTile();
 
                     if (testMap.mapMatrix[i, j] == 'E')
                     {
@@ -140,7 +189,7 @@ public class LevelController : MonoBehaviour
                 if (testMap.mapMatrix[i, j] == 'C')
                 {
                     position.Set(-3 + j, 1, -2 + i);
-                    player = Instantiate(player, position, Quaternion.identity, this.transform);
+                    player = Instantiate(Resources.Load("Prefabs/Character") as GameObject, position, Quaternion.identity, this.transform);
                     player.GetComponent<PlayerController>().coordinates = new Vector3(j, testMap.heightMatrix[i, j], i);
                     elementsInPlay.Add(player);
                     player.name = "Player";
