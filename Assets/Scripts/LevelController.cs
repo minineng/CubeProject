@@ -26,10 +26,10 @@ public class LevelController : MonoBehaviour
     public struct levelStructure
     {
         public char[,] mapMatrix;
-        public List<GameObject> tileList;
         public int[,] heightMatrix;
-        public int setID;
-        public int id;
+        public List<GameObject> tileList;
+        //public int setID;
+        //public int id;
 
     };
 

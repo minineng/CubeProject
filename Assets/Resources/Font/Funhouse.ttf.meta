@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: dd3bc5a08e5386a49aa4b536000f8499
+timeCreated: 1502402222
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Funhouse
+  fontNames:
+  - Funhouse
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

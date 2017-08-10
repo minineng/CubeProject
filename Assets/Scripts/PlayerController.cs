@@ -66,7 +66,7 @@ public class PlayerController : mainElement
         }
         else
         {
-            if(GetComponentInParent<LevelController>().running)
+            if (GetComponentInParent<LevelController>().running)
                 GetComponentInParent<LevelController>().running = false;
             else
                 GetComponentInParent<LevelController>().running = true;
@@ -85,26 +85,26 @@ public class PlayerController : mainElement
         }
     }*/
 
-        /*
-    public void addToActionSet(actionList action)
+    /*
+public void addToActionSet(actionList action)
+{
+   // print("Añado " + action);
+    if (actionSetGapCount() > 0)
+        actionSet[actionSetCount()] = action;
+    else
     {
-       // print("Añado " + action);
-        if (actionSetGapCount() > 0)
-            actionSet[actionSetCount()] = action;
-        else
+        print("Lista de acciones llena");
+
+        for (int i = 0; i < actionSet.Length; i++)
         {
-            print("Lista de acciones llena");
-
-            for (int i = 0; i < actionSet.Length; i++)
-            {
-                print("Accion " + i + " " + actionSet[i]);
-
-            }
+            print("Accion " + i + " " + actionSet[i]);
 
         }
 
-    }*/
-    
+    }
+
+}*/
+
     public override void makeAction(actionList action)
     {
 
@@ -170,7 +170,7 @@ public class PlayerController : mainElement
                 switch (lookingTo)
                 {
                     case 0:
-                        this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y+ jumptHeight, this.transform.position.z + 1);
+                        this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + jumptHeight, this.transform.position.z + 1);
                         coordinates.z++;
                         break;
                     case 1:
@@ -186,16 +186,17 @@ public class PlayerController : mainElement
                         coordinates.x++;
                         break;
                 }
-
-                GetComponentInParent<LevelController>().getTileByCoordinates(new Vector2(coordinates.x, coordinates.z)).GetComponent<tileController>().paintThisTile();
-                coordinates = GetComponentInParent<LevelController>().getTileByCoordinates(new Vector2(coordinates.x, coordinates.z)).GetComponent<tileController>().coordinates;
-
+                if (GetComponentInParent<LevelController>().getTileByCoordinates(new Vector2(coordinates.x, coordinates.z)) != null)
+                {
+                    GetComponentInParent<LevelController>().getTileByCoordinates(new Vector2(coordinates.x, coordinates.z)).GetComponent<tileController>().paintThisTile();
+                    coordinates = GetComponentInParent<LevelController>().getTileByCoordinates(new Vector2(coordinates.x, coordinates.z)).GetComponent<tileController>().coordinates;
+                }
                 break;
             case actionList.execute:
                 executeActions();
                 break;
             case actionList.wait:
-                
+
                 break;
 
         }
