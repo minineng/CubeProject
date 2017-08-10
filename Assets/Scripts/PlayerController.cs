@@ -2,32 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : mainElement
 {
 
-    public actionList[] actionSet;
-
-
-    public enum actionList
-    {
-        nothing,
-        forward,
-        backward,
-        turnRight,
-        turnLeft,
-        jump,
-        wait,
-        execute,
-
-    };
-
-    int lookingTo;
-
-    int actionTurn;
-    public int maxTurns;
-    public float timeBetweenActions;
-    private float timeToNewAction;
-    public Vector3 coordinates;
+    private int maxTurns;
 
     public bool alive;
 
@@ -37,9 +15,9 @@ public class PlayerController : MonoBehaviour
     {
         lookingTo = 3;
         alive = true;
-        maxTurns = 20;
+        //maxTurns = 20;
 
-        actionSet = new actionList[maxTurns];
+       // actionSet = new actionList[maxTurns];
 
     }
 
@@ -74,23 +52,8 @@ public class PlayerController : MonoBehaviour
                 addToActionSet(actionList.turnLeft);
             if (Input.GetButtonDown("Backward"))
                 addToActionSet(actionList.backward);
-
             if (Input.GetButtonDown("ExecuteActions"))
                 executeActions();
-        }
-        else
-        {
-            if (Time.time > timeToNewAction)
-            {
-                if (actionTurn < (actionSet.Length - actionSetGapCount()))
-                {
-                    makeAction(actionSet[actionTurn]);
-                    actionTurn++;
-                    timeToNewAction = Time.time + timeBetweenActions;
-                    if (GetComponentInParent<LevelController>().getTileByCoordinates(coordinates) != null)
-                        GetComponentInParent<LevelController>().getTileByCoordinates(coordinates).GetComponent<tileController>().paintThisTile(true);
-                }
-            }
         }
 
         if (transform.position.y < -2)
@@ -100,29 +63,38 @@ public class PlayerController : MonoBehaviour
 
     public void executeActions()
     {
-        GetComponentInParent<LevelController>().planning = false;
-        timeToNewAction = Time.time + timeBetweenActions;
-        print("Ejecuto las acciones");
-        actionTurn = 0;
-    }
-
-    public int actionSetGapCount()
-    {
-        int auxCont = 0;
-        for (int i = 0; i < actionSet.Length; i++)
+        if (GetComponentInParent<LevelController>().planning)
         {
-            if (actionSet[i] == actionList.nothing)
-                auxCont++;
+            GetComponentInParent<LevelController>().running = true;
+            GetComponentInParent<LevelController>().planning = false;
         }
-
-        return auxCont;
+        else
+        {
+            if(GetComponentInParent<LevelController>().running)
+                GetComponentInParent<LevelController>().running = false;
+            else
+                GetComponentInParent<LevelController>().running = true;
+        }
     }
+    /*
+    public void executeActions()
+    {
+        if (GetComponentInParent<LevelController>().planning)
+        {
+            GetComponentInParent<LevelController>().running = true;
+            GetComponentInParent<LevelController>().planning = false;
+            timeToNewAction = Time.time + timeBetweenActions;
+            print("Ejecuto las acciones");
+            actionTurn = 0;
+        }
+    }*/
+
 
     public void addToActionSet(actionList action)
     {
        // print("Añado " + action);
         if (actionSetGapCount() > 0)
-            actionSet[actionSet.Length - actionSetGapCount()] = action;
+            actionSet[actionSetCount()] = action;
         else
         {
             print("Lista de acciones llena");
@@ -136,8 +108,8 @@ public class PlayerController : MonoBehaviour
         }
 
     }
-
-    public void makeAction(actionList action)
+    
+    public override void makeAction(actionList action)
     {
 
         switch (action)
@@ -204,7 +176,7 @@ public class PlayerController : MonoBehaviour
                 executeActions();
                 break;
             case actionList.wait:
-                transform.GetComponentInParent<LevelController>().turnCount++;
+                
                 break;
 
         }

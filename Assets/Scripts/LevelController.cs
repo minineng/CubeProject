@@ -7,6 +7,7 @@ public class LevelController : MonoBehaviour
 
     public GameObject floor;
     public GameObject character;
+    public GameObject enemy;
     public Vector3 cameraLookingPoint;
 
     public int turnCount;
@@ -14,9 +15,15 @@ public class LevelController : MonoBehaviour
     public bool planning;
     public bool running;
 
+    private float timeToNewAction;
+    public float timeBetweenActions;
+
     public GameObject player;
+    public List<GameObject> elementsInPlay;
 
     levelStructure testMap;
+    public int maxTurns;
+
 
     public struct levelStructure
     {
@@ -25,19 +32,21 @@ public class LevelController : MonoBehaviour
         public int[,] heightMatrix;
         public int setID;
         public int id;
-       
+
     };
 
     // Use this for initialization
     void Start()
     {
-
+        elementsInPlay = new List<GameObject>();
         floor = Resources.Load("Prefabs/Tile", typeof(GameObject)) as GameObject;
 
         int matSize = 5;
         turnCount = 0;
         planning = true;
         running = false;
+        maxTurns = 20;
+        timeBetweenActions = 1f;
 
         testMap.mapMatrix = new char[matSize, matSize];
         testMap.heightMatrix = new int[matSize, matSize];
@@ -57,11 +66,28 @@ public class LevelController : MonoBehaviour
 
     void Update()
     {
+        if (planning && !running)
+            timeToNewAction = Time.time + timeBetweenActions;
 
         if (running)
         {
+            if (Time.time > timeToNewAction)
+            {
+                if (turnCount < player.GetComponent<PlayerController>().actionSetCount())
+                {
+                    player.GetComponent<PlayerController>().makeAction(player.GetComponent<PlayerController>().actionSet[turnCount]);
+                    turnCount++;
+                    timeToNewAction = Time.time + timeBetweenActions;
+                    if (getTileByCoordinates(player.GetComponent<PlayerController>().coordinates) != null)
+                        getTileByCoordinates(player.GetComponent<PlayerController>().coordinates).GetComponent<tileController>().paintThisTile(true);
+                }
+            }
 
 
+        }
+        else
+        {
+            timeToNewAction = Time.time + timeBetweenActions;
 
         }
 
@@ -96,8 +122,16 @@ public class LevelController : MonoBehaviour
                     position.Set(-3 + j, 1, -2 + i);
                     player = Instantiate(character, position, Quaternion.identity, this.transform);
                     player.GetComponent<PlayerController>().coordinates = new Vector3(j, 0, i);
-
+                    elementsInPlay.Add(player);
                     player.name = "Player";
+                }
+                if (testMap.mapMatrix[i, j] == 'T')
+                {
+                    position.Set(-3 + j, 0.33f * (testMap.heightMatrix[i, j] +2), -2 + i);
+                    GameObject auxEnemy = Instantiate(enemy, position, Quaternion.identity, this.transform);
+                    auxEnemy.GetComponent<EnemyController>().coordinates = new Vector3(j, 0, i);
+                    elementsInPlay.Add(auxEnemy);
+                    auxEnemy.name = "Turret";
                 }
             }
         }
@@ -123,6 +157,9 @@ public class LevelController : MonoBehaviour
 
                 if (i == 0 && j == 1)
                     testMap.mapMatrix[i, j] = 'F';
+
+                if (i == 2 && j == 4)
+                    testMap.mapMatrix[i, j] = 'T';
 
             }
         }

@@ -27,6 +27,9 @@ public class CanvasController : MonoBehaviour
             {
                 transform.GetChild(0).GetComponent<Text>().text = "playing time"; 
                 transform.GetChild(0).GetComponent<Text>().color = Color.red;
+
+                transform.GetChild(1).GetComponent<Text>().text = "turn "+ GetComponentInParent<LevelController>().turnCount;
+
             }
             else
             {

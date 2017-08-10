@@ -50,8 +50,10 @@ public class MoveButtonController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        
-	}
+        if (!transform.parent.GetComponentInParent<LevelController>().planning && action != PlayerController.actionList.execute)
+            GetComponent<Button>().interactable = false;
+
+    }
 
     public void OnClick()
     {
