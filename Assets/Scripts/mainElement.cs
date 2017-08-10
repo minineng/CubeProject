@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 abstract public class mainElement : MonoBehaviour
 {
     public int lookingTo;
     public Vector3 coordinates;
     public actionList[] actionSet;
+    //public List<actionList> actionSet;
 
     public enum actionList
     {
