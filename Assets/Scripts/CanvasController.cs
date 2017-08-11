@@ -13,7 +13,7 @@ public class CanvasController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
+        transform.GetChild(2).GetComponent<Text>().text = GetComponentInParent<LevelController>().testMap.world+" - "+ GetComponentInParent<LevelController>().testMap.id;
     }
 
     // Update is called once per frame
