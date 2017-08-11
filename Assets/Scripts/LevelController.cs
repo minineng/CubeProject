@@ -13,8 +13,9 @@ public class LevelController : MonoBehaviour
     public bool planning;
     public bool running;
     public bool allPainted;
+    public bool end;
     public Vector3 finishPosition;
-    private float timeToNewAction;
+    public float timeToNewAction;
     public float timeBetweenActions;
     
     public List<GameObject> elementsInPlay;
@@ -35,30 +36,19 @@ public class LevelController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        /*
-        matSize = 5;
-        testMap.mapMatrix = new char[matSize, matSize];
-        testMap.heightMatrix = new int[matSize, matSize];
-        testMap.id = 1;
-        testMap.world = 2;*/
-
-        
         elementsInPlay = new List<GameObject>();
         floor = Resources.Load("Prefabs/Tile", typeof(GameObject)) as GameObject;
         enemy = Resources.Load("Prefabs/Enemy1", typeof(GameObject)) as GameObject;
-        Instantiate(Resources.Load("Prefabs/Canvas", typeof(GameObject)) as GameObject,transform);
-        Instantiate(Resources.Load("Prefabs/Main Camera", typeof(GameObject)) as GameObject, transform);
-        Instantiate(Resources.Load("Prefabs/Light", typeof(GameObject)) as GameObject, transform);
-        Instantiate(Resources.Load("Prefabs/Scenery", typeof(GameObject)) as GameObject, transform);
+
+        testMap.tileList = new List<GameObject>();
+
         turnCount = 0;
         planning = true;
         running = false;
         allPainted = false;
+        end = false;
         timeBetweenActions = 1f;
         timeToNewAction = 0;
-
-        //mapMatrixInit();
-        //mapMatrixTest();
 
         mapMatrixGenerator();
 
@@ -70,6 +60,7 @@ public class LevelController : MonoBehaviour
 
     void Update()
     {
+        //transform.Find("EventSystem").gameObject.SetActive(true);
         if (planning && !running)
             timeToNewAction = Time.time + timeBetweenActions;
 
@@ -81,12 +72,26 @@ public class LevelController : MonoBehaviour
                 {
                     for (int i = 0; i < elementsInPlay.Count; i++)
                     {
-                        if (elementsInPlay[i].GetComponent<mainElement>().actionSet.Count == 0)
-                            elementsInPlay[i].GetComponent<EnemyController>().addActions(player.GetComponent<PlayerController>().actionSet.Count);
+                        if (elementsInPlay[i].name == "player")
+                            elementsInPlay[i].GetComponent<mainElement>().makeAction(elementsInPlay[i].GetComponent<mainElement>().actionSet[turnCount]);
+                    }
 
-                        elementsInPlay[i].GetComponent<mainElement>().makeAction(elementsInPlay[i].GetComponent<mainElement>().actionSet[turnCount]);
+                    for (int i = 0; i < elementsInPlay.Count; i++)
+                    {
+
+                        if (elementsInPlay[i].name != "player")
+                        {
+                            if (elementsInPlay[i].GetComponent<mainElement>().actionSet.Count == 0)
+                                elementsInPlay[i].GetComponent<EnemyController>().addActions(player.GetComponent<PlayerController>().actionSet.Count);
+
+                            elementsInPlay[i].GetComponent<mainElement>().makeAction(elementsInPlay[i].GetComponent<mainElement>().actionSet[turnCount]);
+                        }
                         //print("Soy " + elementsInPlay[i].name);
                     }
+
+
+
+
 
                     turnCount++;
                     timeToNewAction = Time.time + timeBetweenActions;
@@ -100,9 +105,7 @@ public class LevelController : MonoBehaviour
                 }
             }
             if (player.GetComponent<PlayerController>().coordinates == finishPosition)
-                print("Has llegado a la meta");
-            if (allPainted)
-                print("Has pintado todos los tiles");
+                end = true;
 
         }
         else
@@ -148,8 +151,14 @@ public class LevelController : MonoBehaviour
                     position.Set(-3 + j, 1, -2 + i);
                     player = Instantiate(Resources.Load("Prefabs/Character") as GameObject, position, Quaternion.identity, this.transform);
                     player.GetComponent<PlayerController>().coordinates = new Vector3(j, testMap.heightMatrix[i, j], i);
-                    elementsInPlay.Add(player);
                     player.name = "Player";
+                    if((testMap.world == 1 && (testMap.id == 1 || testMap.id == 2)) || testMap.world == 2 && testMap.id ==2)
+                        player.GetComponent<PlayerController>().lookingTo = 2;
+                    else
+                        player.GetComponent<PlayerController>().lookingTo = 3;
+
+                    elementsInPlay.Add(player);
+                    
                 }
                 if (testMap.mapMatrix[i, j] == 'T')
                 {
@@ -241,7 +250,6 @@ public class LevelController : MonoBehaviour
 
         for (int i = 0; i < testMap.tileList.Count; i++)
         {
-
             if (coordinates == testMap.tileList[i].GetComponent<tileController>().coordinates)
                 aux = testMap.tileList[i];
         }

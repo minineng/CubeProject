@@ -37,7 +37,7 @@ public class CameraController : MonoBehaviour
 
         cameraHeight = transform.position.y;
 
-        lookAt = GetComponentInParent<LevelController>().getCameraLookingPoint();
+        lookAt = new Vector3(-0.5f, -1, -1); ;
 
         timeToGetMoving = inactiveTime + Time.time;
     }

@@ -7,51 +7,18 @@ using UnityEngine.SceneManagement;
 
 public class LevelSelectController : MonoBehaviour
 {
+    private List<LevelController.levelStructure> levelList;
 
-    private Button level11;
-    private Button level12;
-    private Button level13;
-    private Button level21;
-    private Button level22;
-    private Button level23;
-
-    // Use this for initialization
-    void Start()
+    public void Start()
     {
-        level11 = transform.GetChild(0).GetComponent<Button>();
-        level12 = transform.GetChild(1).GetComponent<Button>();
-        level13 = transform.GetChild(2).GetComponent<Button>();
-        level21 = transform.GetChild(3).GetComponent<Button>();
-        level22 = transform.GetChild(4).GetComponent<Button>();
-        level23 = transform.GetChild(5).GetComponent<Button>();
-
+        levelList = new List<LevelController.levelStructure>();
+        readMaps();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-    /*
-     * 
-     * public void goToMap(int index){
-		string aux = ("Mapa "+ index);
-		print (aux);
-		Scene escena = SceneManager.CreateScene (aux);
-		SceneManager.UnloadSceneAsync (SceneManager.GetActiveScene().buildIndex);
-		SceneManager.SetActiveScene (escena);
-		GameObject obj = new GameObject ();
-		obj.AddComponent<MapGenController> ();
-		obj.GetComponent<MapGenController> ().init (ListaMapas [index].dificultad, ListaMapas [index].NumPisos, ListaMapas [index].NumHabitaciones, ListaMapas [index].estilo);
-
-		//script = new MapGenController(ListaMapas [index].dificultad, ListaMapas [index].NumPisos, ListaMapas [index].NumHabitaciones, ListaMapas [index].estilo);
-		//obj.AddComponent (script);
-	}
-     */
 
 
     public void loadLevel(int index)
     {
+
         int auxWorld = ((int)index / 3) + 1;
         int auxIndex;
 
@@ -62,50 +29,103 @@ public class LevelSelectController : MonoBehaviour
 
         auxIndex++;
 
-        string aux = ("Level " + auxWorld+"-"+auxIndex);
+        string aux = ("Level " + auxWorld + "-" + auxIndex);
         print(aux);
-        Scene escena = SceneManager.CreateScene(aux);
-        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene().buildIndex);
-        SceneManager.SetActiveScene(escena);
         GameObject obj = new GameObject();
+        obj.transform.SetParent(transform.parent.parent);
+        obj.name = "Level Controller";
         obj.AddComponent<LevelController>();
-        obj.GetComponent<LevelController>().mapMatrixInit(getMatrix(auxWorld, auxIndex));
 
+        obj.GetComponent<LevelController>().mapMatrixInit(levelList[getMapById(auxWorld, auxIndex)]);
 
-
-
+        transform.parent.parent.Find("CanvasGame").gameObject.SetActive(true);
+        transform.parent.parent.Find("CanvasGame").GetComponent<CanvasController>().init();
+        transform.parent.parent.Find("Scenery").transform.Find("Character").gameObject.SetActive(false);
+        transform.parent.parent.Find("CanvasMenu").gameObject.SetActive(false);
+        transform.parent.parent.Find("CanvasGame").SetParent(obj.transform);
+        this.gameObject.SetActive(false);
 
     }
 
-    private LevelController.levelStructure getMatrix(int world, int index)
+    public void loadLevel(int index, int world)
     {
-        print("Intento cargar el nivel "+world+"-"+index);
+        if (index != 0)
+        {
+            int auxWorld = world;
+            int auxIndex = index;
+
+            string aux = ("Level " + auxWorld + "-" + auxIndex);
+            print(aux);
+            GameObject obj = new GameObject();
+            obj.transform.SetParent(transform.parent.parent);
+            obj.name = "Level Controller";
+            obj.AddComponent<LevelController>();
+
+            obj.GetComponent<LevelController>().mapMatrixInit(levelList[getMapById(auxWorld, auxIndex)]);
+
+            transform.parent.parent.Find("CanvasGame").gameObject.SetActive(true);
+            transform.parent.parent.Find("CanvasGame").GetComponent<CanvasController>().init();
+            transform.parent.parent.Find("Scenery").transform.Find("Character").gameObject.SetActive(false);
+            transform.parent.parent.Find("CanvasMenu").gameObject.SetActive(false);
+            transform.parent.parent.Find("CanvasGame").SetParent(obj.transform);
+            this.gameObject.SetActive(false);
+
+        }
+        else
+        {
+
+
+        }
+
+    }
+
+    private int getMapById(int world, int id)
+    {
+        int auxlevel = -1;
+
+        for (int i = 0; i < levelList.Count; i++)
+        {
+            if (levelList[i].world == world && levelList[i].id == id)
+                auxlevel = i;
+        }
+        return auxlevel;
+    }
+
+    private void readMaps()
+    {
+
         FileInfo theSourceFile = null;
         StreamReader reader = null;
         string text = " "; // assigned to allow first line to be read below
 
         int matSize = 5;
 
-        LevelController.levelStructure auxEstructure = new LevelController.levelStructure();
-        auxEstructure.id = index;
-        auxEstructure.world = world;
-        auxEstructure.mapMatrix = new char[matSize, matSize];
-        auxEstructure.heightMatrix = new int[matSize, matSize];
-        auxEstructure.tileList = new List<GameObject>();
+        int index, world;
+
+        index = 1;
+        world = 1;
 
         theSourceFile = new FileInfo("mapList.txt");
         reader = theSourceFile.OpenText();
-        bool listo = false;
         string[] strArr;
-        while (!listo)
+        while (levelList.Count < 6)
         {
+
             text = reader.ReadLine();
             if (text == (world + "-" + index))
             {
-                print("lo tengo");
+                //print("lo tengo");
+
+                LevelController.levelStructure auxEstructure = new LevelController.levelStructure();
+                auxEstructure.id = index;
+                auxEstructure.world = world;
+                auxEstructure.mapMatrix = new char[matSize, matSize];
+                auxEstructure.heightMatrix = new int[matSize, matSize];
+                auxEstructure.tileList = new List<GameObject>();
+
                 reader.ReadLine();
 
-                for(int i = 0; i < matSize; i++)
+                for (int i = 0; i < matSize; i++)
                 {
                     text = reader.ReadLine();
                     strArr = text.Split(' ');
@@ -127,11 +147,16 @@ public class LevelSelectController : MonoBehaviour
                         auxEstructure.heightMatrix[i, j] = int.Parse(strArr[j]);
                     }
                 }
+                index++;
+                if (index > 3)
+                {
+                    index = 1;
+                    world++;
+                }
 
-                listo = true;
+                levelList.Add(auxEstructure);
             }
         }
-        return auxEstructure;
     }
-    
+
 }

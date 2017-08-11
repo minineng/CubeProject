@@ -52,6 +52,12 @@ public class MoveButtonController : MonoBehaviour {
 	void Update () {
         if (!transform.parent.GetComponentInParent<LevelController>().planning && action != PlayerController.actionList.execute)
             GetComponent<Button>().interactable = false;
+        else
+        {
+            GetComponent<Button>().interactable = true;
+        }
+        if (transform.parent.GetComponentInParent<LevelController>().planning && action == PlayerController.actionList.execute)
+            GetComponent<Image>().sprite = MainSprite;
 
     }
 

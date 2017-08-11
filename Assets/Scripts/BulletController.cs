@@ -40,7 +40,8 @@ public class BulletController : MonoBehaviour
     {
         if (other.name == "Player")
         {
-            Destroy(other.gameObject);
+            other.GetComponent<PlayerController>().alive = false;
+            other.gameObject.SetActive(false);
             Destroy(this.gameObject);
         }
 

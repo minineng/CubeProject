@@ -33,6 +33,24 @@ public class OrderFeedController : MonoBehaviour
         }
     }
 
+    public void clearFeed()
+    {
+        if (feedList.Count != 0)
+        {
+            feedList.Clear();
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                Destroy(transform.GetChild(i).gameObject);
+            }
+
+        }
+        else
+        {
+            feedList = new List<GameObject>();
+        }
+
+    }
+
     public void updateFeedPositions()
     {
         for (int i = 0; i < feedList.Count; i++) {

@@ -13,29 +13,50 @@ public class CanvasController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        transform.GetChild(2).GetComponent<Text>().text = GetComponentInParent<LevelController>().testMap.world+" - "+ GetComponentInParent<LevelController>().testMap.id;
+        transform.Find("IdentificationText").GetComponent<Text>().text = GetComponentInParent<LevelController>().testMap.world+" - "+ GetComponentInParent<LevelController>().testMap.id;
+    }
+
+    public void init()
+    {
+        planning = true;
+        transform.Find("CanvasOrdersFeed").GetComponent<OrderFeedController>().clearFeed();
+        transform.Find("CanvasEndgame").gameObject.SetActive(false);
+        transform.Find("CanvasEndgame").Find("Star1").GetComponent<Image>().sprite = Resources.Load("Images/StarEmpty", typeof(Sprite)) as Sprite;
+        transform.Find("CanvasEndgame").Find("Star2").GetComponent<Image>().sprite = Resources.Load("Images/StarEmpty", typeof(Sprite)) as Sprite;
     }
 
     // Update is called once per frame
     void Update()
     {
         planning = GetComponentInParent<LevelController>().planning;
+        transform.Find("IdentificationText").GetComponent<Text>().text = GetComponentInParent<LevelController>().testMap.world + " - " + GetComponentInParent<LevelController>().testMap.id;
 
         if (!planning)
         {
-            if (GetComponentInParent<LevelController>().player.GetComponent<PlayerController>().alive)
+            if (!GetComponentInParent<LevelController>().end)
             {
-                transform.GetChild(0).GetComponent<Text>().text = "playing time"; 
-                transform.GetChild(0).GetComponent<Text>().color = Color.red;
-                transform.GetChild(1).GetComponent<Text>().text = "turn "+ GetComponentInParent<LevelController>().turnCount;
+                if (GetComponentInParent<LevelController>().player.GetComponent<PlayerController>().alive)
+                {
+                    transform.Find("PlanningText").GetComponent<Text>().text = "playing time";
+                    transform.Find("PlanningText").GetComponent<Text>().color = Color.red;
+                    transform.Find("Turn Count").GetComponent<Text>().text = "turn " + GetComponentInParent<LevelController>().turnCount;
 
+                }
+                else
+                {
+                    transform.Find("CanvasEndgame").gameObject.SetActive(true);
+                    transform.Find("CanvasEndgame").Find("FinishText").GetComponent<Text>().text = "try again";
+                }
             }
             else
             {
-                transform.GetChild(0).GetComponent<Text>().text = "you are dead :)";
-                transform.GetChild(0).GetComponent<Text>().color = Color.red;
-            }
+                transform.Find("CanvasEndgame").gameObject.SetActive(true);
+                transform.Find("CanvasEndgame").Find("FinishText").GetComponent<Text>().text = "well done";
+                transform.Find("CanvasEndgame").Find("Star1").GetComponent<Image>().sprite = Resources.Load("Images/Star", typeof(Sprite)) as Sprite;
+                if(GetComponentInParent<LevelController>().allPainted)
+                    transform.Find("CanvasEndgame").Find("Star2").GetComponent<Image>().sprite = Resources.Load("Images/Star", typeof(Sprite)) as Sprite;
 
+            }
 
         }
 

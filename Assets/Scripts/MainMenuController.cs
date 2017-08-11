@@ -6,32 +6,28 @@ using UnityEngine.UI;
 public class MainMenuController : MonoBehaviour
 {
 
-    public int id; // 0 for play - 1 for exit
-    public Button button;
 
     // Use this for initialization
     void Start()
     {
-        button = GetComponent<Button>();
-        button.onClick.AddListener(TaskOnClick);
+
 
     }
 
-    void TaskOnClick()
+    public void switchMenu(int id)
     {
         switch(id)
         {
-            case 0:
-                this.transform.parent.gameObject.SetActive(false);
-                this.transform.parent.parent.Find("LevelSelectCanvas").gameObject.SetActive(true);
-                
+            case 0://Switches Bewtwwen menus
+                this.transform.Find("MainMenuCanvas").gameObject.SetActive(false);
+                this.transform.Find("LevelSelectCanvas").gameObject.SetActive(true); 
                 break;
             case 1:
                 Application.Quit();
                 break;
             case 2:
-                this.transform.parent.gameObject.SetActive(false);
-                this.transform.parent.parent.Find("MainMenuCanvas").gameObject.SetActive(true);
+                this.transform.Find("MainMenuCanvas").gameObject.SetActive(true);
+                this.transform.Find("LevelSelectCanvas").gameObject.SetActive(false);
                 break;
         }
     }

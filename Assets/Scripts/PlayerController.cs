@@ -11,7 +11,6 @@ public class PlayerController : mainElement
     // Use this for initialization
     void Start()
     {
-        lookingTo = 3;
         alive = true;
         actionSet = new List<actionList>();
 

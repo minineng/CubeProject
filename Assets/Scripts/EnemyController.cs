@@ -12,26 +12,15 @@ public class EnemyController : mainElement {
 
     public enemyType type;
     public GameObject bullet;
+    public bool detectingEnemy;
 
     // Use this for initialization
     void Start () {
         actionSet = new List<actionList>();
-/*
-        switch (type)
-        {
-            case enemyType.turret:
-                for (int i = 0; i < GetComponentInParent<LevelController>().maxTurns; i++)
-                    addToActionSet(actionList.turnRight);
-                break;
-            case enemyType.patroller:
-
-                break;
-        }*/
+        detectingEnemy = false;
 
 
-
-		
-	}
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -50,6 +39,7 @@ public class EnemyController : mainElement {
                 transform.localEulerAngles = new Vector3(0, 90, 0);
                 break;
         }
+
     }
 
     public void addActions(int number)
@@ -130,54 +120,15 @@ public class EnemyController : mainElement {
                 break;
 
         }
-
-        if (type == enemyType.turret)
-            checkPlayer();
     }
 
-    public void checkPlayer()
+    private void OnTriggerStay(Collider other)
     {
-        Vector3 playerPos = GetComponentInParent<LevelController>().player.GetComponent<PlayerController>().coordinates;
-        bool detected = false;
-        switch (lookingTo)
-        {
-            case 0:
-                for (int i = (int)coordinates.z; i <= playerPos.z; i++)
-                {
-                    if (playerPos == new Vector3(coordinates.x, coordinates.y, i))
-                        detected = true;
-                }
-                break;
-            case 1:
-                for(int i=0; i < coordinates.x; i++)
-                {
-                    if (playerPos == new Vector3(i, coordinates.y, coordinates.z))
-                        detected = true;
-                }
-                break;
-
-            case 2:
-                for (int i = 0; i < coordinates.z; i++)
-                {
-                    if (playerPos == new Vector3(coordinates.x, coordinates.y, i))
-                        detected = true;
-                }
-                break;
-            case 3:
-                for (int i = (int)coordinates.x; i <= playerPos.x; i++)
-                {
-                    if (playerPos == new Vector3(i, coordinates.y, coordinates.z))
-                        detected = true;
-                }
-                break;
-        }
-
-        if (detected)
+        if(other.name == "Player" && GetComponentInParent<LevelController>().running)
         {
             GetComponentInParent<LevelController>().running = false;
-            GameObject auxBullet = Instantiate(bullet, new Vector3 (transform.position.x-0.01f, transform.position.y, transform.position.z), Quaternion.identity, transform);
+            GameObject auxBullet = Instantiate(bullet, new Vector3(transform.position.x - 0.01f, transform.position.y, transform.position.z), Quaternion.identity, transform);
             auxBullet.GetComponent<BulletController>().direction = lookingTo;
-
         }
 
 
